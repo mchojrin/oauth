@@ -2,6 +2,9 @@
 
 require_once 'vendor/autoload.php';
 
+$dotenv = \Dotenv\Dotenv::createUnsafeImmutable(__DIR__);
+$dotenv->load();
+
 // Init our repositories
 $clientRepository = new ClientRepository(); // instance of ClientRepositoryInterface
 $scopeRepository = new ScopeRepository(); // instance of ScopeRepositoryInterface

@@ -24,7 +24,7 @@ class ClientEntity implements \League\OAuth2\Server\Entities\ClientEntityInterfa
      */
     public function getRedirectUri()
     {
-        return 'http://localhost:8000/client/index.php';
+        return getenv('CLIENT_REDIRECT_URI');
     }
 
     /**
