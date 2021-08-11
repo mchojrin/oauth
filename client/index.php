@@ -1,6 +1,8 @@
 <?php
 
-require_once '../vendor/autoload.php';
+echo 'I am the client!';
+
+require_once 'vendor/autoload.php';
 
 $dotenv = \Dotenv\Dotenv::createUnsafeImmutable(__DIR__);
 $dotenv->load();
@@ -8,10 +10,10 @@ $dotenv->load();
 $provider = new \League\OAuth2\Client\Provider\GenericProvider([
     'clientId'                => getenv('OAUTH_CLIENT_ID'),    // The client ID assigned to you by the provider
     'clientSecret'            => getenv('OAUTH_CLIENT_SECRET'),    // The client password assigned to you by the provider
-    'redirectUri'             => 'http://localhost:8000/client/index.php',
-    'urlAuthorize'            => 'http://localhost:7000/server/authorize.php',
-    'urlAccessToken'          => 'http://localhost:7000/server/token.php',
-    'urlResourceOwnerDetails' => 'http://localhost:7000/server/resource.php'
+    'redirectUri'             => getenv('CLIENT_REDIRECT_URI'),
+    'urlAuthorize'            => getenv('SERVER_AUTHORIZE_URL'),
+    'urlAccessToken'          => getenv('SERVER_ACCESS_TOKEN_URL'),
+    'urlResourceOwnerDetails' => getenv('SERVER_RESOURCE_URL'),
 ]);
 
 // If we don't have an authorization code then get one

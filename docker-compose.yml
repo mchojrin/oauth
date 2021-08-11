@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  client:
+    build: .
+    ports:
+      - "7000:80"
+    volumes:
+      - ./client:/var/www/html
+      - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+  server:
+    build: .
+    ports:
+      - "8000:80"
+    volumes:
+      - ./server:/var/www/html
+      - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini

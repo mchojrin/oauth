@@ -1,6 +1,6 @@
 <?php
 
-require_once '../vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
 // Init our repositories
 $clientRepository = new ClientRepository(); // instance of ClientRepositoryInterface
@@ -48,4 +48,3 @@ $creator = new Nyholm\Psr7Server\ServerRequestCreator(
 
 $request = $creator->fromGlobals();
 $response = new GuzzleHttp\Psr7\Response();
-
