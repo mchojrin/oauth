@@ -1,7 +1,5 @@
 <?php
 
-echo 'I am the client!';
-
 require_once 'vendor/autoload.php';
 
 $dotenv = \Dotenv\Dotenv::createUnsafeImmutable(__DIR__);
