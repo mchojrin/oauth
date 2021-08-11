@@ -7,6 +7,8 @@ services:
     volumes:
       - ./client:/var/www/html
       - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   server:
     build: .
     ports:
@@ -16,3 +18,5 @@ services:
       - ./docker/php/conf.d/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
       - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
       - ./private.key:/var/www/html/private.key:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
