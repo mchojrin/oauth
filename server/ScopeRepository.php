@@ -8,6 +8,8 @@ class ScopeRepository implements \League\OAuth2\Server\Repositories\ScopeReposit
      */
     public function getScopeEntityByIdentifier($identifier)
     {
+        $scopeEntity = new ScopeEntity();
+
         return new ScopeEntity();
     }
 
@@ -17,5 +19,6 @@ class ScopeRepository implements \League\OAuth2\Server\Repositories\ScopeReposit
     public function finalizeScopes(array $scopes, $grantType, \League\OAuth2\Server\Entities\ClientEntityInterface $clientEntity, $userIdentifier = null)
     {
         // TODO: Implement finalizeScopes() method.
+        return $scopes;
     }
 }

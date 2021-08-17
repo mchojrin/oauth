@@ -2,13 +2,12 @@
 
 class AccessTokenRepository implements \League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface
 {
-
     /**
      * @inheritDoc
      */
     public function getNewToken(\League\OAuth2\Server\Entities\ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null)
     {
-        return uniqid();
+        return new AccessTokenEntity();
     }
 
     /**
@@ -32,6 +31,6 @@ class AccessTokenRepository implements \League\OAuth2\Server\Repositories\Access
      */
     public function isAccessTokenRevoked($tokenId)
     {
-        // TODO: Implement isAccessTokenRevoked() method.
+        false;
     }
 }

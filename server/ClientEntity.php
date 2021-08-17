@@ -2,36 +2,18 @@
 
 class ClientEntity implements \League\OAuth2\Server\Entities\ClientEntityInterface
 {
+    use \League\OAuth2\Server\Entities\Traits\ClientTrait;
+    use \League\OAuth2\Server\Entities\Traits\EntityTrait;
 
-    /**
-     * @inheritDoc
-     */
-    public function getIdentifier()
+    public function __construct()
     {
-        // TODO: Implement getIdentifier() method.
+        $this->setIdentifier(uniqid());
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function getName()
-    {
-        // TODO: Implement getName() method.
-    }
-
     /**
      * @inheritDoc
      */
     public function getRedirectUri()
     {
         return getenv('CLIENT_REDIRECT_URI');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isConfidential()
-    {
-        // TODO: Implement isConfidential() method.
     }
 }

@@ -9,7 +9,7 @@ $provider = new \League\OAuth2\Client\Provider\GenericProvider([
     'clientId'                => getenv('OAUTH_CLIENT_ID'),    // The client ID assigned to you by the provider
     'clientSecret'            => getenv('OAUTH_CLIENT_SECRET'),    // The client password assigned to you by the provider
     'redirectUri'             => getenv('CLIENT_REDIRECT_URI'),
-    'urlAuthorize'            => getenv('SERVER_AUTHORIZE_URL'),
+    'urlAuthorize'            => getenv('AUTHORIZATION_SERVER_URL'),
     'urlAccessToken'          => getenv('SERVER_ACCESS_TOKEN_URL'),
     'urlResourceOwnerDetails' => getenv('SERVER_RESOURCE_URL'),
 ]);

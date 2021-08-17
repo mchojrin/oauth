@@ -8,7 +8,10 @@ class ClientRepository implements \League\OAuth2\Server\Repositories\ClientRepos
      */
     public function getClientEntity($clientIdentifier)
     {
-        return new ClientEntity();
+        $theClient = new ClientEntity();
+        $theClient->setIdentifier($clientIdentifier);
+
+        return $theClient;
     }
 
     /**

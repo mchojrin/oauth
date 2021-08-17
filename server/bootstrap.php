@@ -12,7 +12,7 @@ $accessTokenRepository = new AccessTokenRepository(); // instance of AccessToken
 $authCodeRepository = new AuthCodeRepository(); // instance of AuthCodeRepositoryInterface
 $refreshTokenRepository = new RefreshTokenRepository(); // instance of RefreshTokenRepositoryInterface
 
-$privateKey = 'file://'.__DIR__.DIRECTORY_SEPARATOR.'private.key';
+$privateKey = 'file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'private.key';
 $encryptionKey = 'w94BP8Vp+hIg7G7MlRyzkJg31tkwjL4J3Z4Rmh8jisw='; // generate using base64_encode(random_bytes(32))
 
 // Setup the authorization server
@@ -27,7 +27,7 @@ $server = new \League\OAuth2\Server\AuthorizationServer(
 $grant = new \League\OAuth2\Server\Grant\AuthCodeGrant(
      $authCodeRepository,
      $refreshTokenRepository,
-     new \DateInterval('PT10M') // authorization codes will expire after 10 minutes
+     new \DateInterval('PT10H') // authorization codes will expire after 10 minutes
  );
 
 $grant->setRefreshTokenTTL(new \DateInterval('P1M')); // refresh tokens will expire after 1 month
@@ -37,7 +37,7 @@ $grant->disableRequireCodeChallengeForPublicClients();
 // Enable the authentication code grant on the server
 $server->enableGrantType(
     $grant,
-    new \DateInterval('PT1H') // access tokens will expire after 1 hour
+    new \DateInterval('PT10H') // access tokens will expire after 1 hour
 );
 
 $psr17Factory = new Nyholm\Psr7\Factory\Psr17Factory();
@@ -51,3 +51,5 @@ $creator = new Nyholm\Psr7Server\ServerRequestCreator(
 
 $request = $creator->fromGlobals();
 $response = new GuzzleHttp\Psr7\Response();
+
+session_start();
