@@ -16,6 +16,6 @@ class ScopeEntity implements \League\OAuth2\Server\Entities\ScopeEntityInterface
      */
     public function jsonSerialize()
     {
-        // TODO: Implement jsonSerialize() method.
+        return json_encode(['id' => $this->getIdentifier()]);
     }
 }

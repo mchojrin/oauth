@@ -7,7 +7,16 @@ class AccessTokenRepository implements \League\OAuth2\Server\Repositories\Access
      */
     public function getNewToken(\League\OAuth2\Server\Entities\ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null)
     {
-        return new AccessTokenEntity();
+        $accessTokenEntity = new AccessTokenEntity();
+        $accessTokenEntity->setClient($clientEntity);
+
+        foreach ($scopes as $scope) {
+            $accessTokenEntity->addScope($scope);
+        }
+
+        $accessTokenEntity->setUserIdentifier($userIdentifier);
+
+        return $accessTokenEntity;
     }
 
     /**

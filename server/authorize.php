@@ -6,52 +6,65 @@ require_once 'bootstrap.php';
 
 try {
 
-    // Validate the HTTP request and return an AuthorizationRequest object.
-    $authRequest = $server->validateAuthorizationRequest($request);
+    if (!array_key_exists('authRequest', $_SESSION)) {
+        // Validate the HTTP request and return an AuthorizationRequest object.
+        $authRequest = $server->validateAuthorizationRequest($request);
+        $client = $clientRepository->getClientEntity($request->getQueryParams()['client_id']);
+        $authRequest->setClient($client);
+        $authRequest->setRedirectUri($client->getRedirectUri());
+        $authRequest->setScopes([$scopeRepository->getScopeEntityByIdentifier(1)]);
 
-    // The auth request object can be serialized and saved into a user's session.
+        // The auth request object can be serialized and saved into a user's session.
 
-    $_SESSION['authRequest'] = serialize($authRequest);
+        $_SESSION['authRequest'] = serialize($authRequest);
+    } else {
+        $authRequest = unserialize($_SESSION['authRequest']);
+    }
 
     // You will probably want to redirect the user at this point to a login endpoint.
 
     if (!array_key_exists('username', $_SESSION)) {
         header('Location: login.html');
         die;
-    }
+    } elseif (!array_key_exists('approved', $_SESSION)) {
+        $userRepository = new UserRepository();
 
-    $client = new ClientEntity();
-    $authRequest->setClient($client);
-    $authRequest->setRedirectUri($client->getRedirectUri());
-    $authRequest->setScopes($scopeRepository->getScopeEntityByIdentifier(1));
+        // Once the user has logged in set the user on the AuthorizationRequest
+        $authRequest->setUser(
+            $userRepository->getUserEntityByUserCredentials(
+                $_SESSION['username'],
+                $_SESSION['password'],
+                $grant,
+                $authRequest->getClient()
+            )
+        ); // an instance of UserEntityInterface
+        //
 
-    $userRepository = new UserRepository();
+        $_SESSION['authRequest'] = serialize($authRequest);
 
-    // Once the user has logged in set the user on the AuthorizationRequest
-    $authRequest->setUser(
-        $userRepository->getUserEntityByUserCredentials(
-            $_SESSION['username'],
-            $_SESSION['password'],
-            $grant,
-            $client
-        )
-    ); // an instance of UserEntityInterface
+        // At this point you should redirect the user to an authorization page.
+        // This form will ask the user to approve the client and the scopes requested.
 
-    // At this point you should redirect the user to an authorization page.
-    // This form will ask the user to approve the client and the scopes requested.
-
-    if (!array_key_exists('approved', $_SESSION)) {
         header('Location: approve.html');
         die;
-    }
+    } else {
+        // Once the user has approved or denied the client update the status
+        // (true = approved, false = denied)
+        $authRequest->setAuthorizationApproved(true);
 
+        // Return the HTTP redirect response
+        $response = $server->completeAuthorizationRequest($authRequest, $response);
+
+        session_destroy();
+    }
     // Once the user has approved or denied the client update the status
     // (true = approved, false = denied)
-    $authRequest = unserialize($_SESSION['authRequest']);
     $authRequest->setAuthorizationApproved(true);
 
     // Return the HTTP redirect response
     $response = $server->completeAuthorizationRequest($authRequest, $response);
+
+    session_destroy();
 
 } catch (OAuthServerException $exception) {
 
@@ -66,6 +79,6 @@ try {
 
 http_response_code($response->getStatusCode());
 foreach ($response->getHeaders() as $name => $values) {
-    header("$name: ".implode(',', $values));
+    header("$name: " . implode(',', $values));
 }
 echo $response->getBody();
