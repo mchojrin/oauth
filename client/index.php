@@ -10,8 +10,8 @@ $provider = new \League\OAuth2\Client\Provider\GenericProvider([
     'clientSecret'            => getenv('OAUTH_CLIENT_SECRET'),    // The client password assigned to you by the provider
     'redirectUri'             => getenv('CLIENT_REDIRECT_URI'),
     'urlAuthorize'            => getenv('AUTHORIZATION_SERVER_URL'),
-    'urlAccessToken'          => getenv('SERVER_ACCESS_TOKEN_URL'),
-    'urlResourceOwnerDetails' => getenv('SERVER_RESOURCE_URL'),
+    'urlAccessToken'          => getenv('AUTHORIZATION_SERVER_ACCESS_TOKEN_URL'),
+    'urlResourceOwnerDetails' => getenv('RESOURCE_OWNER_URL'),
 ]);
 
 // If we don't have an authorization code then get one
@@ -49,25 +49,50 @@ if (!isset($_GET['code'])) {
 
         // We have an access token, which we may use in authenticated
         // requests against the service provider's API.
-        echo 'Access Token: ' . $accessToken->getToken() . "<br>";
-        echo 'Refresh Token: ' . $accessToken->getRefreshToken() . "<br>";
-        echo 'Expired in: ' . $accessToken->getExpires() . "<br>";
-        echo 'Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired') . "<br>";
+        ?>
+        <table>
+            <tr>
+                <th>Access token</th>
+                <td><?php echo $accessToken->getToken(); ?></td>
+            </tr>
+            <tr>
+                <th>Refresh Token</th>
+                <td><?php echo $accessToken->getRefreshToken(); ?></td>
+            </tr>
+            <tr>
+                <th>Expired in</th>
+                <td><?php echo $accessToken->getExpires(); ?></td>
+            </tr>
+            <tr>
+                <th>Already expired?</th>
+                <td><?php echo ($accessToken->hasExpired() ? 'expired' : 'not expired') ?></td>
+            </tr>
+        </table>
+<?php
 
         // Using the access token, we may look up details about the
         // resource owner.
+        ?>
+        <h1>Resource owner information</h1>
+<?php
         $resourceOwner = $provider->getResourceOwner($accessToken);
 
         var_export($resourceOwner->toArray());
-
+?>
+        <h1>A resource only accessible via OAuth</h1>
+<?php
         // The provider provides a way to get an authenticated API request for
         // the service, using the access token; it returns an object conforming
         // to Psr\Http\Message\RequestInterface.
         $request = $provider->getAuthenticatedRequest(
             'GET',
-            'https://service.example.com/resource',
+            getenv('RESOURCE_SERVER_URL'),
             $accessToken
         );
+        $httpClient = new \GuzzleHttp\Client();
+        $response = $httpClient->send($request);
+
+        echo $response->getBody();
     } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
 
         // Failed to get the access token or user details.

@@ -2,8 +2,6 @@
 
 use League\OAuth2\Server\Exception\OAuthServerException;
 
-error_log('New request for a token: '.print_r($_REQUEST,1));
-
 require_once 'bootstrap.php';
 
 try {
