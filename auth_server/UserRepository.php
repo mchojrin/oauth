@@ -3,6 +3,14 @@
 class UserRepository implements \League\OAuth2\Server\Repositories\UserRepositoryInterface
 {
 
+    public function getUserEntityById($id)
+    {
+        $userEntity = new UserEntity();
+        $userEntity->setIdentifier(uniqid());
+
+        return $userEntity;
+    }
+
     /**
      * @inheritDoc
      */

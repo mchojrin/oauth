@@ -2,7 +2,6 @@
 
 class ScopeEntity implements \League\OAuth2\Server\Entities\ScopeEntityInterface
 {
-
     /**
      * @inheritDoc
      */
@@ -17,5 +16,10 @@ class ScopeEntity implements \League\OAuth2\Server\Entities\ScopeEntityInterface
     public function jsonSerialize()
     {
         return json_encode(['id' => $this->getIdentifier()]);
+    }
+
+    public function __toString()
+    {
+        return 'Access protected resource';
     }
 }

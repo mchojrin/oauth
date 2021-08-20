@@ -23,20 +23,16 @@ try {
 
     // You will probably want to redirect the user at this point to a login endpoint.
 
-    if (!array_key_exists('username', $_SESSION)) {
-        header('Location: login.php?callback=authorize.php');
-        die;
+    if (!array_key_exists('uid', $_SESSION)) {
+        $response = $response
+            ->withStatus(301)
+            ->withHeader('Location', 'login.php?callback=authorize.php');
     } elseif (!array_key_exists('approved', $_SESSION)) {
         $userRepository = new UserRepository();
 
         // Once the user has logged in set the user on the AuthorizationRequest
         $authRequest->setUser(
-            $userRepository->getUserEntityByUserCredentials(
-                $_SESSION['username'],
-                $_SESSION['password'],
-                $grant,
-                $authRequest->getClient()
-            )
+            $userRepository->getUserEntityById($_SESSION['uid'])
         ); // an instance of UserEntityInterface
         //
 
@@ -45,8 +41,15 @@ try {
         // At this point you should redirect the user to an authorization page.
         // This form will ask the user to approve the client and the scopes requested.
 
-        header('Location: approve.html');
-        die;
+        $response = $response
+            ->withStatus(301)
+            ->withHeader(
+                'Location',
+                'approve.php?scope='.urlencode(implode(',',
+                    array_map(
+                        fn($scope) => $scope->getIdentifier(), $authRequest->getScopes())
+                )).'&callback=authorize.php'
+            );
     } else {
         // Once the user has approved or denied the client update the status
         // (true = approved, false = denied)
@@ -57,15 +60,6 @@ try {
 
         session_destroy();
     }
-    // Once the user has approved or denied the client update the status
-    // (true = approved, false = denied)
-    $authRequest->setAuthorizationApproved(true);
-
-    // Return the HTTP redirect response
-    $response = $server->completeAuthorizationRequest($authRequest, $response);
-
-    session_destroy();
-
 } catch (OAuthServerException $exception) {
 
     // All instances of OAuthServerException can be formatted into a HTTP response
