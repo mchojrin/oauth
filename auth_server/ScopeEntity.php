@@ -8,7 +8,7 @@ class ScopeEntity implements \League\OAuth2\Server\Entities\ScopeEntityInterface
      */
     public function getIdentifier()
     {
-        return uniqid();
+        return 'protected_resource_access';
     }
 
     /**

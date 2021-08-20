@@ -2,7 +2,10 @@
 
 session_start();
 
-$_SESSION['username'] = $_POST['username'];
-$_SESSION['password'] = $_POST['password'];
-
-header('Location: authorize.php');
+if ($_POST['username'] == 'Mauro' && $_POST['password'] == '1234') {
+    header('Location: '.$_POST['callback']);
+} else {
+    ?>
+    <h1>Invalid login</h1>
+<?php
+}

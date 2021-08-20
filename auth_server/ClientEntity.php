@@ -7,6 +7,7 @@ class ClientEntity implements \League\OAuth2\Server\Entities\ClientEntityInterfa
 
     public function __construct()
     {
+        $this->name = 'The client App';
         $this->setIdentifier(uniqid());
         $this->redirectUri = getenv('CLIENT_REDIRECT_URI');
     }

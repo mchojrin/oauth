@@ -24,7 +24,7 @@ try {
     // You will probably want to redirect the user at this point to a login endpoint.
 
     if (!array_key_exists('username', $_SESSION)) {
-        header('Location: login.html');
+        header('Location: login.php?callback=authorize.php');
         die;
     } elseif (!array_key_exists('approved', $_SESSION)) {
         $userRepository = new UserRepository();
