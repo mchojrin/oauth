@@ -4,7 +4,7 @@ require_once 'bootstrap.php';
 
 $scopes = [];
 foreach (preg_split('/,/', $_GET['scope']) as $scope_id) {
-    $sopes[] = $scopeRepository->getScopeEntityByIdentifier($scope_id);
+    $scopes[] = $scopeRepository->getScopeEntityByIdentifier($scope_id);
 }
 ?>
 <!DOCTYPE html>
@@ -15,13 +15,15 @@ foreach (preg_split('/,/', $_GET['scope']) as $scope_id) {
 </head>
 <body>
     <p>"The Client" is asking for permission to:</p>
+    <ul>
     <?php
     foreach ($scopes as $scope) {
         ?>
-        <p><?php echo $scope; ?></p>
+        <li><b><?php echo $scope; ?></b></li>
     <?php
     }
     ?>
+    </ul>
     <p>Do you approve?</p>
     <form method="post" action="do_approve.php">
         <input type="submit" value="Yes">

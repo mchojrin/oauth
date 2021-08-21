@@ -10,7 +10,7 @@ class ScopeRepository implements \League\OAuth2\Server\Repositories\ScopeReposit
     {
         $scopeEntity = new ScopeEntity();
 
-        return new ScopeEntity();
+        return $scopeEntity;
     }
 
     /**
