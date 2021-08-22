@@ -5,17 +5,15 @@ require_once 'vendor/autoload.php';
 $dotenv = \Dotenv\Dotenv::createUnsafeImmutable(__DIR__);
 $dotenv->load();
 
-// Init our repositories
-$clientRepository = new ClientRepository(); // instance of ClientRepositoryInterface
-$scopeRepository = new ScopeRepository(); // instance of ScopeRepositoryInterface
-$accessTokenRepository = new AccessTokenRepository(); // instance of AccessTokenRepositoryInterface
-$authCodeRepository = new AuthCodeRepository(); // instance of AuthCodeRepositoryInterface
-$refreshTokenRepository = new RefreshTokenRepository(); // instance of RefreshTokenRepositoryInterface
+$clientRepository = new ClientRepository();
+$scopeRepository = new ScopeRepository();
+$accessTokenRepository = new AccessTokenRepository();
+$authCodeRepository = new AuthCodeRepository();
+$refreshTokenRepository = new RefreshTokenRepository();
 
 $privateKey = 'file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'private.key';
 $encryptionKey = 'w94BP8Vp+hIg7G7MlRyzkJg31tkwjL4J3Z4Rmh8jisw='; // generate using base64_encode(random_bytes(32))
 
-// Setup the authorization server
 $server = new \League\OAuth2\Server\AuthorizationServer(
     $clientRepository,
     $accessTokenRepository,
@@ -27,26 +25,25 @@ $server = new \League\OAuth2\Server\AuthorizationServer(
 $grant = new \League\OAuth2\Server\Grant\AuthCodeGrant(
      $authCodeRepository,
      $refreshTokenRepository,
-     new \DateInterval('PT10H') // authorization codes will expire after 10 minutes
+     new \DateInterval('PT10M')
  );
 
-$grant->setRefreshTokenTTL(new \DateInterval('P1M')); // refresh tokens will expire after 1 month
+$grant->setRefreshTokenTTL(new \DateInterval('P1M'));
 
 $grant->disableRequireCodeChallengeForPublicClients();
 
-// Enable the authentication code grant on the server
 $server->enableGrantType(
     $grant,
-    new \DateInterval('PT10H') // access tokens will expire after 1 hour
+    new \DateInterval('PT1H')
 );
 
 $psr17Factory = new Nyholm\Psr7\Factory\Psr17Factory();
 
 $creator = new Nyholm\Psr7Server\ServerRequestCreator(
-    $psr17Factory, // ServerRequestFactory
-    $psr17Factory, // UriFactory
-    $psr17Factory, // UploadedFileFactory
-    $psr17Factory  // StreamFactory
+    $psr17Factory,
+    $psr17Factory,
+    $psr17Factory,
+    $psr17Factory
 );
 
 $request = $creator->fromGlobals();
