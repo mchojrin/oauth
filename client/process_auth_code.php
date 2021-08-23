@@ -14,13 +14,10 @@ if (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && $_GET['state'] 
 
     try {
 
-        // Try to get an access token using the authorization code grant.
         $accessToken = $provider->getAccessToken('authorization_code', [
             'code' => urldecode($_GET['code']),
         ]);
 
-        // We have an access token, which we may use in authenticated
-        // requests against the service provider's API.
         ?>
         <h1>Access token information</h1>
         <table>
@@ -41,10 +38,7 @@ if (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && $_GET['state'] 
                 <td><?php echo ($accessToken->hasExpired() ? 'expired' : 'not expired') ?></td>
             </tr>
         </table>
-<?php
-
-        // Using the access token, we may look up details about the
-        // resource owner.
+        <?php
         ?>
         <h1>Resource owner information</h1>
 <?php
@@ -54,9 +48,6 @@ if (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && $_GET['state'] 
 ?>
         <h1>A resource only accessible via OAuth</h1>
 <?php
-        // The provider provides a way to get an authenticated API request for
-        // the service, using the access token; it returns an object conforming
-        // to Psr\Http\Message\RequestInterface.
         $request = $provider->getAuthenticatedRequest(
             'GET',
             getenv('RESOURCE_SERVER_URL'),
@@ -68,7 +59,6 @@ if (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && $_GET['state'] 
         echo $response->getBody();
     } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
 
-        // Failed to get the access token or user details.
         exit($e->getMessage());
     }
 }
